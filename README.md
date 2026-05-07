@@ -2,11 +2,12 @@
 
 ## 介紹
 [RIME (中州韻輸入法引擎)](http://rime.im/) 是Windows、Mac OS X以及Linux上強大的輸入法引擎。但是它預設只提供倉頡五代。慣用三代的您因此卻步？不用怕，RIME是很容易作出延伸的，加上其實三代和五代之間只有近三百個字異碼，何不把三代的編碼加進去？
+參考拼音任意字符/萬用符的設定, 可以用Z作為任意符
 
 ## 使用方法
 
 * 下載 zip 並解壓 (或 git clone)
-* 把`cangjie5.cj3ext.dict.yaml`和`cangjie5.custom.yaml`丢進[用戶資料夾](https://github.com/rime/home/wiki/RimeWithSchemata#user-content-rime-%E4%B8%AD%E7%9A%84%E6%95%B8%E6%93%9A%E6%96%87%E4%BB%B6%E5%88%86%E4%BD%88%E5%8F%8A%E4%BD%9C%E7%94%A8)中
+* 把`cangjie5.schema.yaml`,`cangjie5.cj3ext.dict.yaml`和`cangjie5.custom.yaml`丢進[用戶資料夾](https://github.com/rime/home/wiki/RimeWithSchemata#user-content-rime-%E4%B8%AD%E7%9A%84%E6%95%B8%E6%93%9A%E6%96%87%E4%BB%B6%E5%88%86%E4%BD%88%E5%8F%8A%E4%BD%9C%E7%94%A8)中
 ```
 用戶資料夾
 【中州韻】 ~/.config/ibus/rime/ （0.9.1 以下版本爲 ~/.ibus/rime/)
