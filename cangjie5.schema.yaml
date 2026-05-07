@@ -1,0 +1,159 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: cangjie5
+  name: 五仓世纪
+  version: "0.30"
+  author:
+    - 發明人 朱邦復先生
+    - LdBeth <ldbeth@sdf.org>
+  description: |
+    第五代倉頡輸入法
+    碼表源自倉頡之友發佈的《五倉世紀版》
+    www.chinesecj.com
+  dependencies:
+    - luna_pinyin
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  # - name: simplification
+  #   states: [ 漢字, 汉字 ]
+  - name: extended_charset
+    states: [ 常用, 增廣 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - affix_segmentor@pinyin_lookup
+    - affix_segmentor@wildcard_lookup
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    # - reverse_lookup_translator
+    - table_translator
+    # - table_translator@wildcard_lookup
+    - script_translator@pinyin_lookup
+  filters:
+    # - simplifier
+    # - uniquifier
+    - charset_filter
+    - single_char_filter
+    - reverse_lookup_filter@pinyin_reverse_lookup
+    - reverse_lookup_filter@wildcard_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba*
+  delimiter: " '"
+  algebra:
+    - 'derive/^[^*z]([^*]*)$/*$1/'
+    - 'derive/^([^*z][^*]*)[^*]$/$1*/'
+    - 'derive/^([^*z][^*]*)[^*][^*]$/$1*/'
+    - 'derive/^([^*z])[^*]{1,2}([^*])$/$1*$2/'
+    - 'derive/^([^*z][^*])[^*]{1,2}([^*])$/$1*$2/'
+    - 'xform/(.+)\*/$1z/'
+  # max_code_length: 5  # 五碼頂字上屏
+
+translator:
+  dictionary: &dict cangjie5
+  enable_completion: true
+  enable_charset_filter: true
+  enable_sentence: false
+  sentence_over_completion: false
+  enable_encoder: false
+  encode_commit_history: true
+  enable_user_dict: false
+  max_phrase_length: 5
+  preedit_format:
+    - 'xform/^z(.?)([a-z]*)$/〔符\u$1〕$2/'
+    - 'xform/^([*a-z]*)$/\U$1\E\t($1)/'
+    - 'xform/\*(?=[^()]*\()/重/'
+    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜重|"
+  comment_format:
+    - 'xform/^(z[a-z]*)$/\U$1\E/'
+    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+    - "^yyy.*$"
+  initial_quality: 1.2
+
+abc_segmentor:
+#  extra_tags: [ wildcard_lookup ]
+
+# reverse_lookup:
+#   dictionary: 8105
+#   prism: luna_quanpin
+#   prefix: "`"
+#   suffix: "'"
+#   tips: 〔拼音〕
+#   preedit_format:
+#     - xform/([nl])v/$1ü/
+#     - xform/([nl])ue/$1üe/
+#     - xform/([jqxy])v/$1u/
+#   comment_format:
+#     - "xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
+
+pinyin_lookup:
+  tag: pinyin_lookup
+  prefix: "`"
+  suffix: ;
+  dictionary: 8105
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+  tips: 〔拼音〕
+  closing_tips: 〔苍颉〕
+  initial_quality: 0.2	# 調整該編譯器出字優先度
+
+pinyin_reverse_lookup:
+  tags: [ pinyin_lookup ]
+  dictionary: *dict
+  overwrite_comment: true  # 覆蓋其他提示
+  comment_format:
+    - xform/$/〕/
+    - xform/^/〔/
+    - xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜片、|
+
+wildcard_lookup:
+  tag:  wildcard_lookup
+  tags: [ wildcard_lookup ]
+  dictionary: *dict
+  # overwrite_comment: true  # 覆蓋其他提示
+  comment_format:
+    - xform/$/\t★/
+    - xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜重、|
+
+simplifier:
+  tips: all  # 簡化字模式下提示對應的傳統漢字
+
+punctuator:
+  import_preset: symbols
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: '^/([0-9]0?|[A-Za-z]+)$'
+    pinyin_lookup: "`[a-z]*;?$"
+    wildcard_lookup: "^([^z]+z|\\*)[^0-9]*$"
